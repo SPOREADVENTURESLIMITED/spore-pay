@@ -12,8 +12,8 @@ type D1Binding = { prepare(query: string): D1Statement };
 
 const APP_ORIGIN = "https://spore-pay.spore-cybernetics.workers.dev";
 
-export function createAuth() {
-  const { env } = getCloudflareContext();
+export async function createAuth() {
+  const { env } = await getCloudflareContext({ async: true });
   const bindings = env as unknown as {
     DB: D1Binding;
     BETTER_AUTH_SECRET?: string;
