@@ -1,0 +1,13 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "SPORE PAY",
+    short_name: "SPORE PAY",
+    description: "Payments made simple.",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#f7faf5",
+    theme_color: "#123c2c"
+  };
+}
