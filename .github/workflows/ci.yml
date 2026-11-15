@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
       - name: Validate local D1 migrations
         run: npm run db:migrate:local --workspace @spore-pay/web
       - name: Check TypeScript
