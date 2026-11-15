@@ -31,3 +31,17 @@ Technology: SPORE CYBERNETICS
 4. Sandbox provider adapters and reconciliation
 5. Compliance, security and operational readiness
 6. Controlled production launch after approvals
+
+## Cloudflare deployment
+
+The Next.js application is configured for Cloudflare Workers using the OpenNext adapter and Wrangler. The worker name is `spore-pay`.
+
+To enable the deployment workflow:
+1. In Cloudflare, create an API token with the permissions required to deploy Workers and read the account.
+2. In GitHub, open **Settings → Secrets and variables → Actions → New repository secret**.
+3. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+4. Open **Actions → Deploy SPORE PAY to Cloudflare Workers → Run workflow**.
+
+The deployment workflow is manual so a push cannot unexpectedly publish an unconfigured production deployment. Cloudflare will provide the Workers URL after the first successful deployment.
+
+Cloudflare deployment reference: https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/
