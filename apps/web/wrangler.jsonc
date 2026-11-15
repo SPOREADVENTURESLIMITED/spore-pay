@@ -2,11 +2,21 @@
   "name": "spore-pay",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-15",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "upload_source_maps": true,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "workers_dev": true
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "spore-pay-db",
+      "database_id": "b9d04712-14f1-45f2-b905-be44d4650a99",
+      "migrations_dir": "migrations"
+    }
+  ]
 }
