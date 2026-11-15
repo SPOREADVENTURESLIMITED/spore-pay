@@ -21,7 +21,7 @@ export default function Register() {
         password: String(form.get("password")),
         phone: String(form.get("phone")),
         country: String(form.get("country"))
-      } as Parameters<typeof authClient.signUp.email>[0]);
+      } as unknown as Parameters<typeof authClient.signUp.email>[0]);
       if (result.error) {
         setNote(result.error.message || "Registration could not be completed. Please try again.");
       } else {
