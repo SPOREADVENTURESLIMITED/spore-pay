@@ -63,7 +63,7 @@ export default function Wallet() {
   return <main className="portal-page">
     <aside className="portal-sidebar">
       <Link className="brand" href="/"><span className="brand-mark">S</span>SPORE <b>PAY</b></Link>
-      <div className="portal-nav"><span className="portal-nav-label">CUSTOMER MENU</span><a className="portal-nav-active" href="/wallet">▦ <span>Overview</span></a><a href="#transactions">↔ <span>Transactions</span></a><a href="#account">◎ <span>My account</span></a><a href="mailto:support@sporecybernecs.com">? <span>Help & support</span></a></div>
+      <div className="portal-nav"><span className="portal-nav-label">CUSTOMER MENU</span><Link className="portal-nav-active" href="/wallet">▦ <span>Overview</span></Link><a href="#transactions">↔ <span>Transactions</span></a><a href="#account">◎ <span>My account</span></a><a href="mailto:support@sporecybernecs.com">? <span>Help & support</span></a></div>
       <div className="sidebar-bottom"><span className="avatar">{data?.user.name?.slice(0, 2).toUpperCase() || "SP"}</span><div><strong>{data?.user.name || "Customer"}</strong><small>{data?.user.email || "SPORE PAY account"}</small></div></div>
     </aside>
     <section className="portal-main">
