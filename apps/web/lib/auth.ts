@@ -3,11 +3,16 @@ import { withCloudflare } from "better-auth-cloudflare";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 type NativeD1 = NonNullable<Parameters<typeof withCloudflare>[0]["d1Native"]>;
+type D1Statement = {
+  bind(...values: unknown[]): D1Statement;
+  run(): Promise<unknown>;
+};
+type D1Binding = { prepare(query: string): D1Statement };
 
 export function createAuth(origin: string) {
   const { env } = getCloudflareContext();
   const bindings = env as unknown as {
-    DB: NativeD1;
+    DB: D1Binding;
     BETTER_AUTH_SECRET?: string;
   };
 
@@ -17,7 +22,7 @@ export function createAuth(origin: string) {
 
   return betterAuth({
     ...withCloudflare(
-      { d1Native: bindings.DB },
+      { d1Native: bindings.DB as unknown as NativeD1 },
       {
         secret: bindings.BETTER_AUTH_SECRET,
         baseURL: origin,
@@ -48,12 +53,7 @@ export function createAuth(origin: string) {
             create: {
               after: async (user) => {
                 const currencyByCountry: Record<string, string> = {
-                  UG: "UGX",
-                  KE: "KES",
-                  TZ: "TZS",
-                  RW: "RWF",
-                  BI: "BIF",
-                  SS: "SSP"
+                  UG: "UGX", KE: "KES", TZ: "TZS", RW: "RWF", BI: "BIF", SS: "SSP"
                 };
                 const country = String((user as { country?: string }).country || "UG");
                 const currency = currencyByCountry[country] || "UGX";
