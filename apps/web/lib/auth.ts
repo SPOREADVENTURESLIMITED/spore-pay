@@ -10,7 +10,9 @@ type D1Statement = {
 };
 type D1Binding = { prepare(query: string): D1Statement };
 
-export function createAuth(origin: string) {
+const APP_ORIGIN = "https://spore-pay.spore-cybernetics.workers.dev";
+
+export function createAuth() {
   const { env } = getCloudflareContext();
   const bindings = env as unknown as {
     DB: D1Binding;
@@ -26,8 +28,8 @@ export function createAuth(origin: string) {
       { d1Native: bindings.DB as unknown as NativeD1 },
       {
         secret: bindings.BETTER_AUTH_SECRET,
-        baseURL: origin,
-        trustedOrigins: [origin],
+        baseURL: APP_ORIGIN,
+        trustedOrigins: [APP_ORIGIN],
         emailAndPassword: {
           enabled: true,
           minPasswordLength: 12,
