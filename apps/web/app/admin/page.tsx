@@ -6,7 +6,7 @@ import { createAuth } from "@/lib/auth";
 export const dynamic = "force-dynamic";
 
 export default async function Admin() {
-  const session = await createAuth().api.getSession({ headers: await headers() });
+  const session = await (await createAuth()).api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
   const role = (session.user as typeof session.user & { role?: string }).role;
