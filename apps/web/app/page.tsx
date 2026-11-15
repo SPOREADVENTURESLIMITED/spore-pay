@@ -30,7 +30,7 @@ export default function Home() {
         <a href="#platform" onClick={() => setMenuOpen(false)}>Platform</a>
         <a href="#regions" onClick={() => setMenuOpen(false)}>Our markets</a>
         <a href="#faq" onClick={() => setMenuOpen(false)}>FAQs</a>
-        <a className="nav-cta" href="mailto:hello@sporeadventures.com?subject=SPORE%20PAY%20enquiry" onClick={() => setMenuOpen(false)}>Contact us ↗</a>
+        <a className="nav-cta" href="#faq" onClick={() => setMenuOpen(false)}>Learn more ↗</a>
       </div>
     </nav>
 
@@ -66,7 +66,7 @@ export default function Home() {
 
     <section className="faq shell" id="faq"><div><p className="eyebrow">GOOD TO KNOW</p><h2>Questions,<br/><em>answered.</em></h2></div><div className="faq-list">{faqs.map((f,i)=><article className="faq-item" key={f.q}><button className="faq-question" aria-expanded={openFaq===i} onClick={()=>setOpenFaq(openFaq===i?null:i)}>{f.q}<span>{openFaq===i?"−":"+"}</span></button>{openFaq===i&&<p className="faq-answer">{f.a}</p>}</article>)}</div></section>
 
-    <section className="closing shell"><div><p className="eyebrow">THE NEXT CHAPTER OF PAYMENTS</p><h2>Let’s move<br/><em>forward.</em></h2></div><a className="primary-button" href="mailto:hello@sporeadventures.com?subject=SPORE%20PAY%20enquiry">Talk to our team <span>↗</span></a></section>
+    <section className="closing shell"><div><p className="eyebrow">THE NEXT CHAPTER OF PAYMENTS</p><h2>Let’s move<br/><em>forward.</em></h2></div><a className="primary-button" href="#faq">Explore FAQs <span>↗</span></a></section>
     <footer className="footer shell"><a className="brand" href="#top"><span className="brand-mark">S</span><span>SPORE <b>PAY</b></span></a><div><strong>PAYMENTS MADE SIMPLE</strong><span>Technology by <b>SPORE CYBERNETICS</b></span></div><small>© {new Date().getFullYear()} SPORE ADVENTURES LIMITED</small></footer>
   </main>;
 }
