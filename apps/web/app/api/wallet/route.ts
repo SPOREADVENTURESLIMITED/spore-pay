@@ -19,7 +19,7 @@ type TransactionRow = {
 };
 
 export async function GET(request: Request) {
-  const session = await createAuth(new URL(request.url).origin).api.getSession({
+  const session = await createAuth().api.getSession({
     headers: request.headers
   });
 
