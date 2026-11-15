@@ -41,7 +41,7 @@ export async function GET(request: Request) {
   }
 
   const balanceResult = await db.prepare(
-    "SELECT COALESCE(SUM(CASE WHEN e.direction = 'credit' THEN e.amountMinor ELSE -e.amountMinor END), 0) AS balanceMinor FROM ledger_entries e INNER JOIN ledger_accounts a ON a.id = e.ledgerAccountId WHERE a.walletId = ? AND e.currency = ?"
+    "SELECT COALESCE(SUM(CASE WHEN e.direction = 'credit' THEN e.amountMinor ELSE -e.amountMinor END), 0) AS balanceMinor FROM ledger_entries e INNER JOIN ledger_accounts a ON a.id = e.ledgerAccountId INNER JOIN ledger_transactions t ON t.id = e.transactionId AND t.status = 'posted' WHERE a.walletId = ? AND e.currency = ?"
   ).bind(wallet.id, wallet.currency).first<{ balanceMinor: number }>();
 
   const transactionResult = await db.prepare(
