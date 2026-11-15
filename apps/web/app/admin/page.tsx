@@ -1,4 +1,43 @@
-"use client";
-import Link from "next/link";import {useState} from "react";
-const sample=[{name:"Demo Customer A",email:"customer.a@example.test",date:"15 Nov 2026",status:"Pending review"},{name:"Demo Customer B",email:"customer.b@example.test",date:"14 Nov 2026",status:"Pending review"},{name:"Demo Merchant C",email:"merchant.c@example.test",date:"13 Nov 2026",status:"Needs documents"}];
-export default function Admin(){const[filter,setFilter]=useState("All"),[notice,setNotice]=useState("");const rows=sample.filter(p=>filter==="All"||p.status===filter);return <main className="portal-page admin-page"><aside className="portal-sidebar"><Link className="brand" href="/"><span className="brand-mark">S</span>SPORE <b>PAY</b></Link><div className="portal-nav"><span className="portal-nav-label">ADMINISTRATION</span><Link className="portal-nav-active" href="/admin">▦ <span>Overview</span></Link><a href="#customers">♙ <span>Customers & KYC</span></a><a href="#wallets">▤ <span>Wallet monitoring</span></a><a href="#controls">⚙ <span>System controls</span></a></div><div className="sidebar-bottom"><span className="avatar admin-avatar">AD</span><div><strong>Demo administrator</strong><small>Preview role only</small></div></div></aside><section className="portal-main"><header className="portal-header"><div><span className="eyebrow">OPERATIONS CONSOLE</span><h1>Admin overview</h1></div><div className="portal-header-actions"><span className="demo-pill">DEMO ADMIN</span><Link className="outline-button" href="/">Exit</Link></div></header><div className="preview-alert">Demonstration console only. No customer records, KYC decisions, wallet balances or admin actions are connected to a live system.</div><section className="admin-stats"><article className="admin-stat"><span>REGISTERED PROFILES</span><strong>128</strong><small>Simulated records</small></article><article className="admin-stat"><span>KYC TO REVIEW</span><strong>12</strong><small>Demo queue</small></article><article className="admin-stat"><span>ACTIVE WALLETS</span><strong>96</strong><small>Simulated wallets</small></article><article className="admin-stat"><span>DEMO VOLUME</span><strong>UGX 8.4M</strong><small>Not real money</small></article></section><section className="portal-panel" id="customers"><div className="panel-heading"><div><span className="eyebrow">ONBOARDING QUEUE</span><h2>Customer & KYC review</h2></div><span className="status-chip">3 sample records</span></div><div className="transaction-filters">{["All","Pending review","Needs documents"].map(x=><button key={x} className={filter===x?"filter-active":""} onClick={()=>setFilter(x)}>{x}</button>)}</div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>PROFILE</th><th>SUBMITTED</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>{rows.map(p=><tr key={p.email}><td><strong>{p.name}</strong><small>{p.email}</small></td><td>{p.date}</td><td><span className="status-chip">{p.status}</span></td><td><button className="review-button" onClick={()=>setNotice("Preview only. KYC review is disabled until administrator identity, permissions and audit logging are configured.")}>View</button></td></tr>)}</tbody></table></div>{notice&&<p className="form-notice" role="status">{notice}</p>}</section><section className="portal-panel" id="wallets"><div className="panel-heading"><div><span className="eyebrow">FINANCIAL OPERATIONS</span><h2>Wallet monitoring</h2></div><span className="status-chip">Simulated data</span></div><div className="account-details"><div><small>Sample wallet count</small><strong>96</strong></div><div><small>Currency</small><strong>UGX</strong></div><div><small>Provider connections</small><strong>Not configured</strong></div><div><small>Ledger status</small><strong>Not connected</strong></div></div></section><section className="portal-panel" id="controls"><div className="panel-heading"><div><span className="eyebrow">SECURITY & GOVERNANCE</span><h2>System readiness</h2></div></div><div className="readiness-list"><p><span>Authentication & MFA</span><b>Not configured</b></p><p><span>Role-based permissions</span><b>Not configured</b></p><p><span>Audit logging</span><b>Not configured</b></p><p><span>Payment provider integrations</span><b>Not configured</b></p></div></section><footer className="portal-footer">Production administration requires verified staff identity, MFA and audited permissions.</footer></section></main>}
+import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { createAuth } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+
+export default async function Admin() {
+  const session = await createAuth().api.getSession({ headers: await headers() });
+  if (!session) redirect("/login");
+
+  const role = (session.user as typeof session.user & { role?: string }).role;
+  if (role !== "admin") {
+    return (
+      <main className="auth-page">
+        <header className="auth-top">
+          <Link className="brand" href="/"><span className="brand-mark">S</span>SPORE <b>PAY</b></Link>
+          <Link className="back-link" href="/wallet">← Customer wallet</Link>
+        </header>
+        <section className="auth-card" style={{ maxWidth: 560, margin: "12vh auto" }}>
+          <span className="eyebrow">RESTRICTED AREA</span>
+          <h1>Administrator access required</h1>
+          <p>Your account does not have the administrator role. This event is not a KYC or financial decision.</p>
+          <Link className="outline-button" href="/wallet">Return to wallet</Link>
+        </section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="auth-page">
+      <header className="auth-top">
+        <Link className="brand" href="/"><span className="brand-mark">S</span>SPORE <b>PAY</b></Link>
+        <Link className="back-link" href="/wallet">← Customer wallet</Link>
+      </header>
+      <section className="auth-card" style={{ maxWidth: 680, margin: "8vh auto" }}>
+        <span className="eyebrow">ADMINISTRATOR ACCESS VERIFIED</span>
+        <h1>Operations console is not yet enabled</h1>
+        <p>Your administrator identity is recognized, but KYC review, financial operations, user management and administrative actions remain disabled until audited controls and workflows are implemented.</p>
+      </section>
+    </main>
+  );
+}
