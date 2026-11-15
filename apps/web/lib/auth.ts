@@ -6,6 +6,7 @@ type NativeD1 = NonNullable<Parameters<typeof withCloudflare>[0]["d1Native"]>;
 type D1Statement = {
   bind(...values: unknown[]): D1Statement;
   run(): Promise<unknown>;
+  first<T>(): Promise<T | null>;
 };
 type D1Binding = { prepare(query: string): D1Statement };
 
@@ -57,17 +58,22 @@ export function createAuth(origin: string) {
                 };
                 const country = String((user as { country?: string }).country || "UG");
                 const currency = currencyByCountry[country] || "UGX";
-                const walletId = crypto.randomUUID();
-                const accountId = crypto.randomUUID();
+                const proposedWalletId = crypto.randomUUID();
                 const now = Date.now();
 
                 await bindings.DB.prepare(
                   "INSERT OR IGNORE INTO wallets (id, userId, currency, status, createdAt, updatedAt) VALUES (?, ?, ?, 'pending', ?, ?)"
-                ).bind(walletId, user.id, currency, now, now).run();
+                ).bind(proposedWalletId, user.id, currency, now, now).run();
+
+                const wallet = await bindings.DB.prepare(
+                  "SELECT id FROM wallets WHERE userId = ? AND currency = ? LIMIT 1"
+                ).bind(user.id, currency).first<{ id: string }>();
+
+                if (!wallet) throw new Error("Customer wallet could not be initialized.");
 
                 await bindings.DB.prepare(
                   "INSERT OR IGNORE INTO ledger_accounts (id, walletId, ownerUserId, accountCode, accountType, currency, status, createdAt) VALUES (?, ?, ?, ?, 'liability', ?, 'active', ?)"
-                ).bind(accountId, walletId, user.id, `WALLET-${walletId}`, currency, now).run();
+                ).bind(crypto.randomUUID(), wallet.id, user.id, `WALLET-${wallet.id}`, currency, now).run();
               }
             }
           }
