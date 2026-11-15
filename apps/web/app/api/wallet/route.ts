@@ -1,8 +1,12 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { withCloudflare } from "better-auth-cloudflare";
 import { createAuth } from "@/lib/auth";
 
-type NativeD1 = NonNullable<Parameters<typeof withCloudflare>[0]["d1Native"]>;
+type D1Statement = {
+  bind(...values: unknown[]): D1Statement;
+  all<T>(): Promise<{ results: T[] }>;
+  first<T>(): Promise<T | null>;
+};
+type D1Binding = { prepare(query: string): D1Statement };
 
 type WalletRow = { id: string; currency: string; status: string };
 type TransactionRow = {
@@ -19,12 +23,10 @@ export async function GET(request: Request) {
     headers: request.headers
   });
 
-  if (!session) {
-    return Response.json({ error: "Authentication required." }, { status: 401 });
-  }
+  if (!session) return Response.json({ error: "Authentication required." }, { status: 401 });
 
   const { env } = getCloudflareContext();
-  const db = (env as unknown as { DB: NativeD1 }).DB;
+  const db = (env as unknown as { DB: D1Binding }).DB;
 
   const walletResult = await db.prepare(
     "SELECT id, currency, status FROM wallets WHERE userId = ? LIMIT 1"
