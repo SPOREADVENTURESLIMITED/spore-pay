@@ -2,16 +2,23 @@ name: Deploy SPORE PAY to Cloudflare Workers
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["SPORE PAY CI"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
