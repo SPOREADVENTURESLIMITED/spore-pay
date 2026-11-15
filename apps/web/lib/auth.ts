@@ -42,6 +42,35 @@ export function createAuth(origin: string) {
         session: {
           expiresIn: 60 * 60 * 24 * 7,
           updateAge: 60 * 60 * 24
+        },
+        databaseHooks: {
+          user: {
+            create: {
+              after: async (user) => {
+                const currencyByCountry: Record<string, string> = {
+                  UG: "UGX",
+                  KE: "KES",
+                  TZ: "TZS",
+                  RW: "RWF",
+                  BI: "BIF",
+                  SS: "SSP"
+                };
+                const country = String((user as { country?: string }).country || "UG");
+                const currency = currencyByCountry[country] || "UGX";
+                const walletId = crypto.randomUUID();
+                const accountId = crypto.randomUUID();
+                const now = Date.now();
+
+                await bindings.DB.prepare(
+                  "INSERT OR IGNORE INTO wallets (id, userId, currency, status, createdAt, updatedAt) VALUES (?, ?, ?, 'pending', ?, ?)"
+                ).bind(walletId, user.id, currency, now, now).run();
+
+                await bindings.DB.prepare(
+                  "INSERT OR IGNORE INTO ledger_accounts (id, walletId, ownerUserId, accountCode, accountType, currency, status, createdAt) VALUES (?, ?, ?, ?, 'liability', ?, 'active', ?)"
+                ).bind(accountId, walletId, user.id, `WALLET-${walletId}`, currency, now).run();
+              }
+            }
+          }
         }
       }
     )
