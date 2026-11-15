@@ -18,6 +18,11 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install
+      - name: Apply D1 database migrations
+        run: npm run db:migrate:remote --workspace @spore-pay/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: Deploy to Cloudflare Workers
         run: npm run deploy --workspace @spore-pay/web
         env:
