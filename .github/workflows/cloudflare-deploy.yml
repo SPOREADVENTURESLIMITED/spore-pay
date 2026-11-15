@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
       - name: Apply D1 database migrations
         run: npm run db:migrate:remote --workspace @spore-pay/web
         env:
