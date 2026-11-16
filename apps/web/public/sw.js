@@ -1,6 +1,12 @@
-const CACHE_NAME = "spore-pay-shell-v1";
+const CACHE_NAME = "spore-pay-shell-v2";
 const OFFLINE_URL = "/offline.html";
-const PRECACHE_URLS = ["/", OFFLINE_URL, "/manifest.webmanifest", "/spore-icon.svg"];
+const PRECACHE_URLS = [
+  "/",
+  OFFLINE_URL,
+  "/manifest.webmanifest",
+  "/spore-icon-192.png",
+  "/spore-icon-512.png"
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {

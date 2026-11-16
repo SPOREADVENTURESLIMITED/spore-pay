@@ -7,7 +7,13 @@ export const metadata: Metadata = {
   description: "A planned East African wallet and payment gateway platform.",
   applicationName: "SPORE PAY",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/spore-icon.svg", apple: "/spore-icon.svg" }
+  icons: {
+    icon: [
+      { url: "/spore-icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/spore-icon-512.png", sizes: "512x512", type: "image/png" }
+    ],
+    apple: [{ url: "/spore-icon-192.png", sizes: "192x192", type: "image/png" }]
+  }
 };
 
 export const viewport: Viewport = {
