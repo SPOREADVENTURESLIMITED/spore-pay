@@ -47,8 +47,8 @@ export async function GET(request: Request) {
   ).bind(wallet.id, wallet.currency).first<{ balanceMinor: number }>();
 
   const transactionResult = await db.prepare(
-    "SELECT t.reference, t.transactionType, t.description, t.status, t.createdAt, COALESCE(SUM(CASE WHEN e.direction = 'credit' THEN e.amountMinor ELSE -e.amountMinor END), 0) AS amountMinor FROM ledger_transactions t INNER JOIN ledger_entries e ON e.transactionId = t.id INNER JOIN ledger_accounts a ON a.id = e.ledgerAccountId WHERE a.walletId = ? GROUP BY t.id ORDER BY t.createdAt DESC LIMIT 20"
-  ).bind(wallet.id).all<TransactionRow>();
+    "SELECT t.reference, t.transactionType, t.description, t.status, t.createdAt, COALESCE(SUM(CASE WHEN e.direction = 'credit' THEN e.amountMinor ELSE -e.amountMinor END), 0) AS amountMinor FROM ledger_transactions t INNER JOIN ledger_entries e ON e.transactionId = t.id INNER JOIN ledger_accounts a ON a.id = e.ledgerAccountId WHERE a.walletId = ? AND e.currency = ? AND t.status = 'posted' GROUP BY t.id ORDER BY t.createdAt DESC LIMIT 20"
+  ).bind(wallet.id, wallet.currency).all<TransactionRow>();
 
   return Response.json({
     user: { name: session.user.name, email: session.user.email },
