@@ -73,7 +73,7 @@ export default function Wallet() {
       <section className="wallet-grid">
         <article className="balance-card"><span>POSTED LEDGER BALANCE</span><strong>{loading ? "Loading…" : money(data?.balanceMinor ?? 0)}</strong><small>{data?.wallet ? `${currency} wallet · ${data.wallet.status.replace("_", " ")}` : "Wallet setup is pending"}</small><div className="balance-actions"><button disabled>＋ Add money</button><button disabled>↗ Send money</button></div></article>
         <article className="mini-stat"><span>WALLET STATUS</span><strong>{loading ? "…" : data?.wallet?.status === "active" ? "Active" : "Pending"}</strong><small>Subject to KYC and approval</small><b>Payments disabled</b></article>
-        <article className="mini-stat"><span>TRANSACTIONS</span><strong>{loading ? "…" : String(data?.transactions.length ?? 0).padStart(2, "0")}</strong><small>Posted and pending records</small><b>Live ledger view</b></article>
+        <article className="mini-stat"><span>TRANSACTIONS</span><strong>{loading ? "…" : String(data?.transactions.length ?? 0).padStart(2, "0")}</strong><small>Posted ledger entries</small><b>Live ledger view</b></article>
       </section>
       <section className="portal-panel" id="transactions">
         <div className="panel-heading"><div><span className="eyebrow">ACCOUNT ACTIVITY</span><h2>Recent transactions</h2></div><button className="quiet-button" disabled>Download statement</button></div>
