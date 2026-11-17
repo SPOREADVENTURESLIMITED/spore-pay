@@ -25,8 +25,14 @@ export async function GET(request: Request) {
 
   if (!session) return Response.json({ error: "Authentication required." }, { status: 401 });
 
-  const { env } = getCloudflareContext();
+  // Use the async context API in request handlers so the Cloudflare request
+  // context is available reliably in the OpenNext runtime.
+  const { env } = await getCloudflareContext({ async: true });
   const db = (env as unknown as { DB: D1Binding }).DB;
+
+  if (!db) {
+    return Response.json({ error: "Wallet database is not configured." }, { status: 503 });
+  }
 
   const walletResult = await db.prepare(
     "SELECT id, currency, status FROM wallets WHERE userId = ? LIMIT 1"
